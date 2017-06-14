@@ -18,7 +18,7 @@ const userSchema = mongoose.Schema({
 const qrcodeSchema = mongoose.Schema({
   qrcodeUrl: String,
   WOAname: String,
-  active: Number,//使用中1,未使用0
+  active: Boolean,
   time: String
 })
 
