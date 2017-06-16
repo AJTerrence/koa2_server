@@ -1,12 +1,14 @@
 {
-  "name": "server",
+  "name": "koa2_server",
   "version": "1.0.0",
-  "description": "",
+  "description": "koa2 server demo",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node --harmony app.js"
   },
+  "author": "Terrence",
+  "license": "MIT",
   "dependencies": {
     "koa": "^2.2.0",
     "koa-router": "^7.2.0",

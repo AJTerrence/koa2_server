@@ -3,12 +3,12 @@ const OAuth = require('wechat-oauth')
 
 const appid = 'wx223a4560da9848f2'
 const appsecret = 'c774257398922e77b15cf5b23ec29fe9'
-const domain = 'http://127.0.0.1:8888/'
-const redirect_uri = domain + 'oauth/user'
+const domain = 'http://127.0.0.1:8888'
+const redirect_uri = domain + '/user/admin'
 const client = new OAuth(appid,appsecret)
 
 const index = function(ctx){
-  equipmentId = ctx.query.equipmentId
+  id = ctx.params.id
   const url = client.getAuthorizeURL(redirect_uri, '123', 'snsapi_userinfo')
   ctx.redirect(url)
 }
@@ -16,8 +16,7 @@ const index = function(ctx){
 const getCode = function(ctx){
   const code = ctx.query.code
 
-  //暂时解决code重复使用报错问题的拙劣方法，引入session?
-  const URL = domain +''
+  const URL = domain + ''
   ctx.redirect(URL)
 
   client.getAccessToken(code,function(err,result){
@@ -34,7 +33,7 @@ const getCode = function(ctx){
         country: userInfo.country,
         headimgurl: userInfo.headimgurl,
         privilege: userInfo.privilege,
-        equipmentID: equipmentId,
+        ID: id,
         time: new Date()
       }
       try{

@@ -10,7 +10,7 @@ const userSchema = mongoose.Schema({
   country: String,
   headimgurl: String,
   privilege: Object,
-  equipmentID: Number,
+  ID: Number,
   time: String
 })
 

@@ -19,7 +19,7 @@ const getqrInfo = async function(ctx) {
     } else {
       ctx.body = qcInfo
       console.log(qcInfo)
-      //_.each(qcInfo,function(r){
+     // _.each(qcInfo,function(r){
       //URL.push(r.qrcodeUrl)
       //})
       //ctx.body = URL

@@ -2,7 +2,9 @@ const Koa = require('koa')
 const mongoose = require('mongoose')
 const bodyParser = require('koa-bodyparser')
 const koaRouter = require('koa-router')
+//const session = require('koa-session')
 const oauth = require('./routes/oauth')
+const qrcode = require('./routes/qrcode')
 const config = require('./config/config')
 
 const router = new koaRouter()
@@ -14,8 +16,11 @@ require('./config/init')(app,mongoose)
 
 app.use(bodyParser())
 
-router.use('/oauth',oauth.routes())
+//app.keys = [config.cookieSecret]
+//app.use(session(app))
 
+router.use('/api',qrcode.routes())
+router.use('/user',oauth.routes())
 app.use(router.routes())
 
 //错误处理
@@ -27,5 +32,6 @@ app.on('error',function(err,ctx){
   }
 })
 
-app.listen(3000)
-console.log('Koa start at port 3000')
+//启动koa
+app.listen(config.PORT)
+console.log(`Koa server listen at port ${config.PORT}`)
