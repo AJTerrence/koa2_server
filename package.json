@@ -17,6 +17,7 @@
     "path": "^0.12.7",
     "mongoose": "^4.10.4",
     "wechat-oauth": "^1.2.1",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "koa-static": "^3.0.0"
   }
 }

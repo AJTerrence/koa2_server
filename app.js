@@ -2,6 +2,8 @@ const Koa = require('koa')
 const mongoose = require('mongoose')
 const bodyParser = require('koa-bodyparser')
 const koaRouter = require('koa-router')
+const path = require('path')
+const static = require('koa-static')
 //const session = require('koa-session')
 const oauth = require('./routes/oauth')
 const qrcode = require('./routes/qrcode')
@@ -14,13 +16,15 @@ const app = new Koa()
 //初始化配置
 require('./config/init')(app,mongoose)
 
+app.use(static(path.resolve('views')))
+
 app.use(bodyParser())
 
 //app.keys = [config.cookieSecret]
 //app.use(session(app))
 
-router.use('/api',qrcode.routes())
 router.use('/user',oauth.routes())
+router.use('/api',qrcode.routes())
 app.use(router.routes())
 
 //错误处理

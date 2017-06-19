@@ -4,13 +4,13 @@ const _ = require('lodash')
 const getqrInfo = async function(ctx) {
 
   const qrcode = {
-    qrcodeUrl: 'http://wx.qlogo.cn/mmopen/H2nmVeXvy6v9nJzWoOSDqgaHTQQTqy6iaNmaGoCaCSESg8ibxRh27jaPHoXmDdxQ1F3qJgjOSlz7f9Y11Sv1gXYETHU9oyKfSe/0',
+    qrcodeUrl: 'http://orrumi7ur.bkt.clouddn.com/wechat/qusaosaologo.jpg',
     WOAname: '趣扫扫',
     active: true,
     time: new Date()
   }
   try {
-    const qcInfo = await models.qrcodeInfo.find({active: true})
+    const qcInfo = await models.qrcodeInfo.find({WOAname: '趣扫扫'})
     //const URL = []
     if (qcInfo == '') {
       models.qrcodeInfo.create(qrcode)

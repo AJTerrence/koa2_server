@@ -15,11 +15,14 @@ const config = {
   body:'wechat payment',
   total_fee: 88,
   notify_url:'http://www.nowdone.com.cn'
-
 }
 
-const createNonce = function(){
+const createNoncestr = function(){
   return Math.random().toString(36).substr(2,15)
+}
+
+const sign = function(){
+
 }
 const payment = function(){
 
@@ -31,9 +34,10 @@ const preArray = {
   trade_type:config.trade_type,
   notify_url:config.notify_url,
   fee_type:config.fee_type,
-  nonce_str:createNonce(),
+  nonce_str:createNoncestr(),
   body:config.body,
-  total_fee:config.total_fee
+  total_fee:config.total_fee,
+  sign: sign()
 
 
 }
