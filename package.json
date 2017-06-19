@@ -18,6 +18,7 @@
     "mongoose": "^4.10.4",
     "wechat-oauth": "^1.2.1",
     "lodash": "^4.17.4",
-    "koa-static": "^3.0.0"
+    "koa-static": "^3.0.0",
+    "koa-session2": "^2.2.4"
   }
 }

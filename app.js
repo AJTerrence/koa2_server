@@ -4,7 +4,6 @@ const bodyParser = require('koa-bodyparser')
 const koaRouter = require('koa-router')
 const path = require('path')
 const static = require('koa-static')
-//const session = require('koa-session')
 const oauth = require('./routes/oauth')
 const qrcode = require('./routes/qrcode')
 const config = require('./config/config')
@@ -20,9 +19,6 @@ app.use(static(path.resolve('views')))
 
 app.use(bodyParser())
 
-//app.keys = [config.cookieSecret]
-//app.use(session(app))
-
 router.use('/user',oauth.routes())
 router.use('/api',qrcode.routes())
 app.use(router.routes())
@@ -36,6 +32,5 @@ app.on('error',function(err,ctx){
   }
 })
 
-//启动koa
 app.listen(config.PORT)
 console.log(`Koa server listen at port ${config.PORT}`)
