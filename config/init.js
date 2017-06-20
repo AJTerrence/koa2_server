@@ -4,7 +4,7 @@ const logger = require('koa-logger')
 module.exports = function(app,mongoose){
   switch (app.env){
     case 'development':
-      app.use(logger('dev'));
+      app.use(logger('dev'))
       break
     case 'production':
       app.use(require('koa-logger')({
@@ -12,8 +12,6 @@ module.exports = function(app,mongoose){
       }))
       break
   }
-
-  //根据不同环境连接不同数据库
   switch (app.env){
     case 'development':
       mongoose.connect(config.mongo.development.connectionString,config.mongo.opts)
@@ -22,6 +20,6 @@ module.exports = function(app,mongoose){
       mongoose.connect(config.mongo.production.connectionString,config.mongo.opts)
       break
     default:
-      throw new Error(app.env + '环境下无法连接数据库！')
+      throw new Error(app.env + 'can not connect to mongodb')
   }
 }

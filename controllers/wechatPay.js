@@ -1,6 +1,3 @@
-/**
- * Created by terrence on 17-6-16.
- */
 const request = require('request')
 const crypto = require('crypto')
 const xml2js = require('xml2js')

@@ -12,7 +12,6 @@ const router = new koaRouter()
 
 const app = new Koa()
 
-//初始化配置
 require('./config/init')(app,mongoose)
 
 app.use(static(path.resolve('views')))
@@ -23,7 +22,6 @@ router.use('/user',oauth.routes())
 router.use('/api',qrcode.routes())
 app.use(router.routes())
 
-//错误处理
 app.on('error',function(err,ctx){
   if(process.env.NODE_ENV != 'production'){
     ctx.body = '500 server error'

@@ -7,13 +7,13 @@ const domain = 'http://127.0.0.1:3000'
 const redirect_uri = domain + '/user/admin'
 const client = new OAuth(appid,appsecret)
 
-const index = function(ctx){
+const callback = function(ctx){
   id = ctx.params.id
   const url = client.getAuthorizeURL(redirect_uri, '123', 'snsapi_userinfo')
   ctx.redirect(url)
 }
 
-const getCode = function(ctx){
+const getUserInfo = function(ctx){
   const code = ctx.query.code
 
   const URL = domain + ''
@@ -24,6 +24,7 @@ const getCode = function(ctx){
 
     client.getUser(openid,function(err,result){
       const userInfo = result
+      console.log(userInfo)
       const user = {
         openid: userInfo.openid,
         nickname: userInfo.nickname,
@@ -39,7 +40,7 @@ const getCode = function(ctx){
       try{
         models.userInfo.create(user)
       }catch (e){
-        ctx.body = '获取用户信息失败' + e.message
+        ctx.body = 'error:' + e.message
         console.log(e)
       }
     })
@@ -47,6 +48,6 @@ const getCode = function(ctx){
 }
 
 module.exports = {
-  index,
-  getCode
+  callback,
+  getUserInfo
 }

@@ -1,9 +1,6 @@
-/**
- * Created by terrence on 17-6-16.
- */
 const router = require('koa-router')()
-const getqrcodeInfo = require('../controllers/getqrcodeInfo')
+const qrcodeInfo = require('../controllers/qrcodeInfo')
 
-router.get('/qrcode',getqrcodeInfo.getqrInfo)
+router.get('/qrcode',qrcodeInfo.getqrcodeInfo)
 
 module.exports = router

@@ -1,8 +1,8 @@
-const getUserInfo = require('../controllers/getUserInfo')
+const userInfo = require('../controllers/userInfo')
 const router = require('koa-router')()
 
-router.get('/nd/:id', getUserInfo.index)
+router.get('/nd/:id', userInfo.callback)
 
-router.get('/admin', getUserInfo.getCode)
+router.get('/admin', userInfo.getUserInfo)
 
 module.exports = router
