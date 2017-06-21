@@ -40,27 +40,10 @@ wxpay.getBrandWCPayRequestParams({
 const request = require('request')
 const crypto = require('crypto')
 const xml2js = require('xml2js')
-
-const config = {
-  appid: 'wx223a4560da9848f2',
-  mch_id: '',
-  spbill_create_ip: '',
-  trade_type: 'JSAPI',
-  fee_type: 'CNY',
-  body:'wechatpay test',
-  total_fee: 88,
-  notify_url:'http://www.nowdone.com.cn'
-}
+const userInfo = require('./userInfo')
 
 const createNoncestr = function(){
   return Math.random().toString(36).substr(2,15)
-}
-
-const sign = function(){
-}
-
-const getXML = function(){
-
 }
 
 const Time = function(){
@@ -78,27 +61,52 @@ const Time = function(){
   }
 }
 
-const preArray = {
-  appid: config.appid,
-  mch_id: config.mch_id,
-  nonce_str: createNoncestr(),
-  sign: sign(),
-  body: config.body,
-  out_trade_no: Time() + Math.random().toString().substr(2,10),
-  total_fee: config.total_fee,
-  spbill_create_ip: config.spbill_create_ip,
-  notify_url: config.notify_url,
-  trade_type: config.trade_type
+const _sign = function(){
+  const stringA = 'appid=' + appid + '&attach=' + attach + '&body=' + body + '&mch_id' + mch_id
+  + '&nonce_str=' + nonce_str + '&notify_url=' + notify_url + '&openid=' + openid + '&out_trade_no=' + out_trade_no
+  + '&spbill_create_ip=' + spbill_create_ip + '&total_fee=' + total_fee + '&trade_type=' + trade_type
+
+  const stringSignTemp = stringA + '&key=192006250b4c09247ec02edce69f6a2d'
+  return crypto.createHash('md5').update(stringSignTemp,'utf-8').digest('hex')
 }
 
-const payment = function(ctx){
-  const formData = getXML(preArray)
+const appid = 'wx223a4560da9848f2',
+const mch_id = '1230000109',
+const attach = 'payment'
+const nonce_str = createNoncestr(),
+const sign = _sign(),
+const body = 'wechat-pay',
+const out_trade_no = Time() + Math.random().toString().substr(2,10),
+const total_fee = 1,
+const spbill_create_ip = '127.0.0.1',
+const notify_url = 'http://www.nowdone.com.cn/pay',
+const trade_type = 'JSAPI',
+const openid = userInfo.getUserInfo.openid
 
-  request({
-    url: 'https://api.mch.weixin.qq.com/pay/unifiedorder',
-    method: 'POST',
-    body: formData
-  },function(err,ctx){
-    const bodyXML = ctx.body.toString('utf-8')
-  })
-}
+const paymnet = function(){
+const formData = '<xml>';
+formData += '<appid>' + appid + '</appid>';
+formData += '<attach>' + attach + '</attach>';
+formData += '<body>' + body + '</body>';
+formData += '<mch_id>' + mch_id + '</mch_id>';
+formData += '<nonce_str>' + nonce_str + '</nonce_str>';
+formData += '<notify_url>' + notify_url + '</notify_url>';
+formData += '<openid>' + openid + '</openid>';
+formData += '<out_trade_no>' + out_trade_no + '</out_trade_no>';
+formData += '<spbill_create_ip>' + spbill_create_ip + '</spbill_create_ip>';
+formData += '<total_fee>' + total_fee + '</total_fee>';
+formData += '<trade_type>' + trade_type + '</trade_type>';
+formData += '<sign>' + sign + '</sign>';
+formData += '<xml>';
+
+request({
+  url: 'https://api.mch.weixin.qq.com/pay/unifiedorder',
+  method: 'POST',
+  body: formData
+},function(err,ctx){
+  if(err){
+    console.log(err)
+  }else{
+    console.log(ctx.body)
+  }
+})
