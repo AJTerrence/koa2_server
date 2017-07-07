@@ -1,5 +1,7 @@
 #koa2_server
 
+./controllers/userinfo.js配置appid,appsecret
+
 npm install
 
 node --harmony app.js
