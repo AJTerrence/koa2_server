@@ -1,30 +1,33 @@
 const models = require('../models/models')
 const OAuth = require('wechat-oauth')
 
-const appid = 'wx223a4560da9848f2'
-const appsecret = 'c774257398922e77b15cf5b23ec29fe9'
+const appid = ''
+const appsecret = ''
 const domain = 'http://127.0.0.1:3000'
 const redirect_uri = domain + '/user/admin'
 const client = new OAuth(appid,appsecret)
 
-const callback = function(ctx){
+const callback =  function(ctx){
   id = ctx.params.id
-  const url = client.getAuthorizeURL(redirect_uri, '123', 'snsapi_userinfo')
+  const url =  client.getAuthorizeURL(redirect_uri, '123', 'snsapi_userinfo')
+  ctx.session = {
+    user_id: Math.random().toString(36).substr(2),
+  }
   ctx.redirect(url)
 }
 
-const getUserInfo = function(ctx){
+const getUserInfo = async function(ctx){
   const code = ctx.query.code
 
-  const URL = domain + ''
-  ctx.redirect(URL)
+  ctx.redirect(domain)
 
   client.getAccessToken(code,function(err,result){
-    const openid = result.data.openid
+    openid = result.data.openid
+    const access_token = result.data.access_token
 
     client.getUser(openid,function(err,result){
       const userInfo = result
-      console.log(userInfo)
+
       const user = {
         openid: userInfo.openid,
         nickname: userInfo.nickname,
@@ -37,6 +40,8 @@ const getUserInfo = function(ctx){
         ID: id,
         time: new Date()
       }
+      console.log(user)
+
       try{
         models.userInfo.create(user)
       }catch (e){
@@ -46,6 +51,7 @@ const getUserInfo = function(ctx){
     })
   })
 }
+
 
 module.exports = {
   callback,

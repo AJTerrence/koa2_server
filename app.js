@@ -1,16 +1,14 @@
 const Koa = require('koa')
 const mongoose = require('mongoose')
 const bodyParser = require('koa-bodyparser')
-const koaRouter = require('koa-router')
+const Router = require('koa-router')
 const path = require('path')
 const static = require('koa-static')
 const oauth = require('./routes/oauth')
 const qrcode = require('./routes/qrcode')
 const config = require('./config/config')
-
-const router = new koaRouter()
-
 const app = new Koa()
+const router = new Router()
 
 require('./config/init')(app,mongoose)
 
@@ -18,8 +16,8 @@ app.use(static(path.resolve('views')))
 
 app.use(bodyParser())
 
-router.use('/user',oauth.routes())
-router.use('/api',qrcode.routes())
+router.use('/user',oauth.routes(),oauth.allowedMethods())
+router.use('/api',qrcode.routes(),qrcode.allowedMethods())
 app.use(router.routes())
 
 app.on('error',function(err,ctx){
