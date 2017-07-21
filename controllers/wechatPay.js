@@ -200,6 +200,7 @@ const getWechatPayid = function(_spbillId,_traType,_openid,_out_trade_no,_attach
   _formData = null
 }
 */
+/*
 const userInfo = require('./userInfo')
 const fs = require('fs')
 const Payment = require('wechat-pay').Payment
@@ -246,4 +247,14 @@ const payCallback = function(ctx){
       console.log('FAIL')
     }
   })
+}*/
+const models = require('../models/models')
+const test  = async function(ctx){
+  const data = await models.tokenInfo.findOne({appid: '13'},function(err,doc){
+    if(err) throw err
+    console.log(doc)
+  }).exec()
+}
+module.exports = {
+  test,
 }

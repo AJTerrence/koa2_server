@@ -13,10 +13,8 @@ const getqrcodeInfo = async function(ctx) {
     if (qcInfo == '') {
       await models.qrcodeInfo.create(qrcode)
       ctx.body = [qrcode]
-      console.log(qrcode)
     } else {
       ctx.body = qcInfo
-      console.log(qcInfo)
     }
   }catch(e){
     ctx.body = 'error:' + e.message

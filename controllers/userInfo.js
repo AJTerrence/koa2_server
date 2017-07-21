@@ -1,34 +1,96 @@
 const models = require('../models/models')
 const OAuth = require('wechat-oauth')
+const request = require('request-promise')
+const Promise = require('bluebird')
 
-const appid = ''
-const appsecret = ''
+const appid = 'wx223a4560da9848f2'
+const appsecret = 'c774257398922e77b15cf5b23ec29fe9'
 const domain = 'http://127.0.0.1:3000'
 const redirect_uri = domain + '/user/admin'
 const client = new OAuth(appid,appsecret)
+var openid
+var access_token
+var deviceId
 
 const callback =  function(ctx){
-  id = ctx.params.id
-  const url =  client.getAuthorizeURL(redirect_uri, '123', 'snsapi_userinfo')
-  ctx.session = {
-    user_id: Math.random().toString(36).substr(2),
-  }
+  deviceId = ctx.query.deviceId
+  const url =  client.getAuthorizeURL(redirect_uri, '123', 'snsapi_base')
   ctx.redirect(url)
 }
-
-const getUserInfo = async function(ctx){
+const getUserCode = async function(ctx){
   const code = ctx.query.code
+  const url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + appid + '&secret=' + appsecret + '&code=' + code + '&grant_type=authorization_code'
+  return new Promise(function(resolve,reject){
+    request({url: url}).then(function(response){
+      if(response){
+        const _data = JSON.parse(response)
+         access_token = _data.access_token
+         openid = _data.openid
+        resolve(response)
+        ctx.redirect('/user/getUserInfo')
 
-  ctx.redirect(domain)
+      }else{
+        throw new Error('fails')
+      }
+    }).catch(function(err){
+      console.error(err)
+      reject(err)
+    })
+  })
+}
 
+const getUserInfoByOpenid = async function(ctx,next){
+  const url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + access_token + '&openid=' + openid  +'&lang=zh_CN'
+  return new Promise(function(resolve,reject){
+    request({url: url}).then(async function(response){
+      if(response){
+        const _data = JSON.parse(response)
+        const result = await models.userInfo.findOne({openid: openid})
+        if(result == null){
+          const user = {
+            openid: openid,
+            nickname: _data.nickname,
+            sex: _data.sex,
+            province: _data.province,
+            city: _data.city,
+            county: _data.county,
+            headimgurl: _data.headimgurl,
+            coin: 0,
+            time: new Date()
+          }
+          try{
+            models.userInfo.create(user)
+          }catch(e){
+            console.error(e)
+          }
+        }else{
+          await next()
+        }
+        ctx.session.openid = openid
+        ctx.session.deviceId = deviceId
+        console.log('1')
+        ctx.redirect('/')
+        resolve(response)
+      }else{
+        throw new Error('fails')
+      }
+    }).catch(function(err){
+      console.log(err)
+      reject(err)
+    })
+  })
+}
+/*const getUserInfo = async function(ctx){
+  const code = ctx.query.code
   client.getAccessToken(code,function(err,result){
-    openid = result.data.openid
+    const openid = result.data.openid
     const access_token = result.data.access_token
-
-    client.getUser(openid,function(err,result){
+    client.getUser(openid,async function(err,result){
       const userInfo = result
-
-      const user = {
+      const data = await models.userInfo.findOne({openid: openid})
+      if(data == null){
+        const coin = 0
+        const user = {
         openid: userInfo.openid,
         nickname: userInfo.nickname,
         sex: userInfo.sex,
@@ -36,24 +98,39 @@ const getUserInfo = async function(ctx){
         city: userInfo.city,
         country: userInfo.country,
         headimgurl: userInfo.headimgurl,
-        privilege: userInfo.privilege,
-        ID: id,
+        coin: coin,
         time: new Date()
       }
-      console.log(user)
-
       try{
         models.userInfo.create(user)
-      }catch (e){
-        ctx.body = 'error:' + e.message
-        console.log(e)
+      }catch(e){
+        console.error(e)
+      }
+      }else{
+        console.log('next')
       }
     })
   })
 }
-
-
+*/
+const getUserCoin = async function(ctx){
+  const openid = ctx.session.openid
+  if(openid){
+    const result = await models.userInfo.findOne({openid: openid})
+    ctx.body = {
+      success: true,
+      coin: result.coin
+    }
+  }else{
+    ctx.body = {
+      success: false,
+      msg: 'please scan the qrcode again'
+    }
+    }
+  }
 module.exports = {
   callback,
-  getUserInfo
+  getUserCode,
+  getUserInfoByOpenid,
+  getUserCoin
 }

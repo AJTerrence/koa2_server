@@ -8,8 +8,7 @@ const userSchema = mongoose.Schema({
   city: String,
   country: String,
   headimgurl: String,
-  privilege: Object,
-  ID: Number,
+  coin: Number,
   time: String
 })
 
@@ -20,10 +19,20 @@ const qrcodeSchema = mongoose.Schema({
   time: String
 })
 
+const tokenSchema = mongoose.Schema({
+  appid: String,
+  openid: String,
+  token: String,
+  used: Boolean,
+  time: String
+})
+
 const userInfo = mongoose.model('userInfo',userSchema)
 const qrcodeInfo = mongoose.model('qrcodeInfo',qrcodeSchema)
+const tokenInfo = mongoose.model('tokenInfo',tokenSchema)
 
 module.exports = {
   userInfo,
-  qrcodeInfo
+  qrcodeInfo,
+  tokenInfo
 }
