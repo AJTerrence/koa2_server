@@ -12,11 +12,13 @@ var openid
 var access_token
 var deviceId
 
-const callback =  function(ctx){
-  deviceId = ctx.query.deviceId
-  const url =  client.getAuthorizeURL(redirect_uri, '123', 'snsapi_base')
+const callback = function(ctx){
+  deviceId = ctx.params.deviceId
+  const url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + appid + '&redirect_uri='+ redirect_uri + '&response_type=code' + 
+  '&scope=snsapi_userinfo&state=123#wechat_redirect'
   ctx.redirect(url)
 }
+/*
 const getUserCode = async function(ctx){
   const code = ctx.query.code
   const url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + appid + '&secret=' + appsecret + '&code=' + code + '&grant_type=authorization_code'
@@ -35,6 +37,31 @@ const getUserCode = async function(ctx){
     }).catch(function(err){
       console.error(err)
       reject(err)
+    })
+  })
+}
+*/
+const getUserCode = async function(ctx){
+  const code = ctx.query.code
+  const url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + appid + '&secret=' + appsecret + '&code=' + code + '&grant_type=authorization_code'
+  return new Promise(function(resolve,reject){
+    request({url: url}).then(function(response){
+      if(response){
+        const _data = JSON.parse(response)
+        console.log(_data)
+        access_token = _data.access_token
+        openid = _data.openid
+        const uri = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + access_token + '&openid=' + openid  +'&lang=zh_CN'
+        request({url:uri}).then(function(response){
+          const data = JSON.parse(response)
+          console.log(data)
+        })
+        resolve()
+      }else{
+        throw new Error('fails')
+      }
+    }).catch(function(err){
+      console.error(err)
     })
   })
 }
@@ -66,9 +93,8 @@ const getUserInfoByOpenid = async function(ctx,next){
         }else{
           await next()
         }
-        ctx.session.openid = openid
-        ctx.session.deviceId = deviceId
-        console.log('1')
+        //ctx.session.openid = openid
+        //ctx.session.deviceId = deviceId
         ctx.redirect('/')
         resolve(response)
       }else{
@@ -113,24 +139,9 @@ const getUserInfoByOpenid = async function(ctx,next){
   })
 }
 */
-const getUserCoin = async function(ctx){
-  const openid = ctx.session.openid
-  if(openid){
-    const result = await models.userInfo.findOne({openid: openid})
-    ctx.body = {
-      success: true,
-      coin: result.coin
-    }
-  }else{
-    ctx.body = {
-      success: false,
-      msg: 'please scan the qrcode again'
-    }
-    }
-  }
 module.exports = {
   callback,
   getUserCode,
-  getUserInfoByOpenid,
-  getUserCoin
+  getUserInfoByOpenid
 }
+

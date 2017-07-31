@@ -22,6 +22,23 @@ const getqrcodeInfo = async function(ctx) {
   }
 }
 
+const getUserCoin = async function(ctx){
+  const openid = ctx.session.openid
+  if(openid){
+    const result = await models.userInfo.findOne({openid: openid})
+    ctx.body = {
+      success: true,
+      coin: result.coin
+    }
+  }else{
+    ctx.body = {
+      success: false,
+      msg: 'please scan the qrcode again'
+    }
+    }
+  }
+
 module.exports = {
-  getqrcodeInfo
+  getqrcodeInfo,
+  getUserCoin
 }
