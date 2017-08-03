@@ -22,7 +22,7 @@ app.use(bodyParser())
 app.keys = [config.cookieSecret]
 const CONFIG = {
 	key: 'koa:sess',
-	maxAge: 300000,
+	maxAge: 3000000,
 	overwrite: true,
 	httpOnly: true,
 	signed: true,

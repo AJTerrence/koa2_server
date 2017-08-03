@@ -3,13 +3,14 @@ const models = require('../models/models')
 const getqrcodeInfo = async function(ctx) {
 
   const qrcode = {
+    appid: 'wxe269be5d7e65716d',
     qrcodeUrl: 'http://orrumi7ur.bkt.clouddn.com/wechat/qusaosaologo.jpg',
     WOA: '趣扫扫',
     active: true,
-    time: new Date()
+    create_at: new Date()
   }
   try {
-    const qcInfo = await models.qrcodeInfo.find({WOA: '趣扫扫'})
+    const qcInfo = await models.qrcodeInfo.find({active: true})
     if (qcInfo == '') {
       await models.qrcodeInfo.create(qrcode)
       ctx.body = [qrcode]
