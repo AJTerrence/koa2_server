@@ -3,7 +3,7 @@ const request = require('request-promise')
 
 const appid = 'wx223a4560da9848f2'
 const appsecret = 'c774257398922e77b15cf5b23ec29fe9'
-const domain = 'http://127.0.0.1:3000'
+const domain = 'https%3A%2F%2Fhtzzncsydo.localtunnel.me'
 const redirect_uri = domain + '/user/admin'
 var openid,access_token,deviceId
 
