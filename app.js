@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('koa-bodyparser')
 const Router = require('koa-router')
 const path = require('path')
-const static = require('koa-static')
+//const static = require('koa-static')
 const oauth = require('./routes/oauth')
 const qrcode = require('./routes/qrcode')
 const coin = require('./routes/coin')
@@ -15,7 +15,7 @@ const router = new Router()
 
 require('./config/init')(app,mongoose)
 
-app.use(static(path.resolve('views')))
+//app.use(static(path.resolve('views')))
 
 app.use(bodyParser())
 

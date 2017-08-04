@@ -3,7 +3,7 @@ const request = require('request-promise')
 
 const appid = 'wx223a4560da9848f2'
 const appsecret = 'c774257398922e77b15cf5b23ec29fe9'
-const domain = 'https%3A%2F%2Fhtzzncsydo.localtunnel.me'
+const domain = 'http://'
 const redirect_uri = domain + '/user/admin'
 var openid,access_token,deviceId
 
@@ -14,7 +14,7 @@ const callback = function(ctx){
     ctx.redirect(url)
 }
 
-const getUserInfo = async function(ctx,next){
+const getUserInfo = async function(ctx){
     const code = ctx.query.code
     const url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + appid + '&secret=' + appsecret + 
     '&code=' + code + '&grant_type=authorization_code'
@@ -51,19 +51,20 @@ const getUserInfo = async function(ctx,next){
       coin: 0,
       create_at: new Date()
     }
-    await models.coinInfo.findOne({openid: _DATA.openid},async function(err,doc,next){
+    await models.coinInfo.findOne({openid: _DATA.openid},function(err,doc){
       if(err) throw err
         if(doc === null){
           models.coinInfo.create(coin)
         }else{
-        await next()    
+        //await next()
+        console.log('1')   
         }
     })
     try{
       models.userInfo.create(user)
       ctx.session.deviceId = deviceId
       ctx.session.openid = openid
-      ctx.redirect('/?deviceId='+deviceId+'&openid='+openid)
+      ctx.redirect('http://www.nowdone.com.cn/?deviceId='+deviceId+'&openid='+openid)
     }catch(e){
       console.error(e)
     }
